@@ -1,42 +1,38 @@
-import { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TextInputProps,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, TextInput } from "react-native";
+import WeatherIcon from "./utils/weather-icon";
 
 const Main: React.FC = () => {
   const KEY = "d4917a86ad00c8f97c306ecfa4544840";
 
-  const [city, setCity] = useState("");
-  const [lat, setLat] = useState("");
-  const [lon, setLon] = useState("");
+  const [city, setCity] = useState<string>("");
+  const [lat, setLat] = useState<string>("");
+  const [lon, setLon] = useState<string>("");
 
-  const [weather, setWeather] = useState("");
+  const [weather, setWeather] = useState<string>("");
+  const [icon, setIcon] = useState<string>("");
 
   useEffect(() => {
     fetch(
       `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${KEY}`
-    ).then((response) => response.json())
+    )
+      .then((response) => response.json())
       .then((data) => {
         setLat(data[0].lat);
         setLon(data[0].lon);
-      })
-  },[city])
+      });
+  }, [city]);
 
   const getWeather = () => {
-      fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${KEY}`
-      )
-        .then((response) => response.json())
-        .then((data) => setWeather(data.weather[0].main))
-    }
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${KEY}`
+    )
+      .then((response) => response.json())
+      .then((data) => setWeather(data.weather[0].main));
+  };
 
   return (
     <View>
-      <Text>Main</Text>
       <TextInput
         value={city}
         onChangeText={(newText) => setCity(newText)}
@@ -45,6 +41,7 @@ const Main: React.FC = () => {
         placeholder="Enter the city name..."
       />
       <Text>{weather}</Text>
+      <WeatherIcon weatherId={"01d.png"} />
     </View>
   );
 };
